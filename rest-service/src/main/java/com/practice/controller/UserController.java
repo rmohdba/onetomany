@@ -7,12 +7,17 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.practice.domain.Tasks;
-import com.practice.domain.Users;
+import com.practice.Tasks;
+import com.practice.Users;
+import com.practice.request.RequestHandler;
+import com.practice.response.ResponseHandler;
 import com.practice.service.UserService;
 
 @RestController
@@ -21,10 +26,27 @@ public class UserController {
 		@Autowired
 		private UserService userService;
 		
+		@RequestMapping(method=RequestMethod.POST, value="/")
+		ResponseHandler process(@RequestBody RequestHandler requestHandler){
+			
+			String operation = requestHandler.getOperation();
+			
+			List<Users> users = null;
+			
+			switch(operation){
+			case "all-users":
+				users = allUsers();
+				break;
+			}
+			ResponseHandler response = new ResponseHandler();
+			response.setUsers(users);
+			return response;
+		}
 		
-		@GetMapping("/all-users")
+		@RequestMapping("/all-users")
 		public List<Users> allUsers() {
-			return userService.findAll();
+			List<Users> usersList = userService.findAll();
+			return usersList;
 		}
 			
 		@GetMapping("/user")
@@ -41,28 +63,20 @@ public class UserController {
 		}
 		
 		@GetMapping("/save-user")
-		public @ResponseBody
-		String save(@RequestParam Map< String, String> values) {
+		public String save(@RequestParam Map< String, String> values) {
 			Users user = new Users(values.get("first"), values.get("last"));
 			
 			boolean finished= values.get("status").equals("true")?true:false;
 			Tasks task = new Tasks(values.get("taskname"),values.get("description"), new Date(),finished);
+			task.setUser(user);
 			
-			
-			/*task.setName("test taks");
-			task.setDescription("test desp");
-			task.setDate_created(new Date());
-			task.setFinished(false);*/
-			
-			/*user.setFirstname("test first");
-			user.setLastname("testlast");*/
 			List <Tasks> tasks = new ArrayList<>();
 			tasks.add(task);
 			
 			user.setTask(tasks);
 			
 			userService.save(user);
-			 return "User saved";
+			return "User saved";
 		}
 		
 		@GetMapping("/test3")
