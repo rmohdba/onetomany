@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.practice.Tasks;
 import com.practice.dao.TaskRepo;
-import com.practice.domain.Tasks;
 import com.practice.service.TaskService;
 
 @Component

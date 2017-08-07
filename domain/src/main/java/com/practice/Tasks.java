@@ -1,8 +1,8 @@
-package com.practice.domain;
+package com.practice;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,22 +12,25 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import com.practice.domain.Users;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="Tasks")
 public class Tasks {
 
 	@Id			
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private String name;
 	private String description;
+	@Column(name = "date_created", columnDefinition="TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date_created;
 	private boolean finished;
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="id_user")
+	@JsonIgnore
+	@ManyToOne//(cascade=CascadeType.ALL)
+	@JoinColumn(name="user_id")
 	private Users user;
 	
 	public Users getUser() {

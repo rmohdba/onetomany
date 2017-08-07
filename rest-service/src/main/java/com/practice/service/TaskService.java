@@ -2,9 +2,9 @@ package com.practice.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import com.practice.domain.Tasks;
+
+import com.practice.Tasks;
 //@Component
 @Service
 public interface TaskService {

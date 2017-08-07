@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.practice.domain.Users;
+import com.practice.Users;
 
 @Service
 public interface UserService {
