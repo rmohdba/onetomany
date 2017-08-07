@@ -18,69 +18,76 @@ import com.practice.Tasks;
 import com.practice.Users;
 import com.practice.request.RequestHandler;
 import com.practice.response.ResponseHandler;
+import com.practice.response.ResponseParser;
 import com.practice.service.UserService;
 
 @RestController
 public class UserController {
-			
-		@Autowired
-		private UserService userService;
-		
-		@RequestMapping(method=RequestMethod.POST, value="/")
-		ResponseHandler process(@RequestBody RequestHandler requestHandler){
-			
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	ResponseParser responseParser;
+
+	@RequestMapping(method = RequestMethod.POST, value = "/")
+	ResponseHandler process(@RequestBody RequestHandler requestHandler) {
+		ResponseHandler response = new ResponseHandler();
+		try {
 			String operation = requestHandler.getOperation();
-			
+
 			List<Users> users = null;
-			
-			switch(operation){
+
+			switch (operation) {
 			case "all-users":
 				users = allUsers();
 				break;
+			default:
+				throw new Exception("Invalid request received with " + operation);
 			}
-			ResponseHandler response = new ResponseHandler();
 			response.setUsers(users);
 			return response;
+		} catch (Exception e) {
+			return responseParser.handleResponse(e);
 		}
-		
-		@RequestMapping("/all-users")
-		public List<Users> allUsers() {
-			List<Users> usersList = userService.findAll();
-			return usersList;
-		}
-			
-		@GetMapping("/user")
-		public @ResponseBody
-		Users user(@RequestParam int id) {
-			return userService.findOne(id);
-		}
-		
-		@GetMapping("/delete-user")
-		public @ResponseBody
-		String delete(@RequestParam int id) {
-			userService.delete(id);
-			 return "User "+id+" deleted";
-		}
-		
-		@GetMapping("/save-user")
-		public String save(@RequestParam Map< String, String> values) {
-			Users user = new Users(values.get("first"), values.get("last"));
-			
-			boolean finished= values.get("status").equals("true")?true:false;
-			Tasks task = new Tasks(values.get("taskname"),values.get("description"), new Date(),finished);
-			task.setUser(user);
-			
-			List <Tasks> tasks = new ArrayList<>();
-			tasks.add(task);
-			
-			user.setTask(tasks);
-			
-			userService.save(user);
-			return "User saved";
-		}
-		
-		@GetMapping("/test3")
-		public @ResponseBody String test2() {
-			return "redirect:/all-users";
-		}
+	}
+
+	@RequestMapping("/all-users")
+	public List<Users> allUsers() {
+		List<Users> usersList = userService.findAll();
+		return usersList;
+	}
+
+	@GetMapping("/user")
+	public @ResponseBody Users user(@RequestParam int id) {
+		return userService.findOne(id);
+	}
+
+	@GetMapping("/delete-user")
+	public @ResponseBody String delete(@RequestParam int id) {
+		userService.delete(id);
+		return "User " + id + " deleted";
+	}
+
+	@GetMapping("/save-user")
+	public String save(@RequestParam Map<String, String> values) {
+		Users user = new Users(values.get("first"), values.get("last"));
+
+		boolean finished = values.get("status").equals("true") ? true : false;
+		Tasks task = new Tasks(values.get("taskname"), values.get("description"), new Date(), finished);
+		task.setUser(user);
+
+		List<Tasks> tasks = new ArrayList<>();
+		tasks.add(task);
+
+		user.setTask(tasks);
+
+		userService.save(user);
+		return "User saved";
+	}
+
+	@GetMapping("/test3")
+	public @ResponseBody String test2() {
+		return "redirect:/all-users";
+	}
 }
