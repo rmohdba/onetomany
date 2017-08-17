@@ -55,5 +55,6 @@
 	<modules>
 		<module>rest-service</module>
 		<module>domain</module>
+		<module>ui</module>
 	</modules>
 </project>

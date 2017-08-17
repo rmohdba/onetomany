@@ -31,7 +31,7 @@ public class UserController {
 	ResponseParser responseParser;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/")
-	ResponseHandler process(@RequestBody RequestHandler requestHandler) {
+	public ResponseHandler process(@RequestBody RequestHandler requestHandler) {
 		ResponseHandler response = new ResponseHandler();
 		try {
 			String operation = requestHandler.getOperation();
@@ -55,6 +55,7 @@ public class UserController {
 	@RequestMapping("/all-users")
 	public List<Users> allUsers() {
 		List<Users> usersList = userService.findAll();
+//		try{Thread.sleep(5000);}catch(Exception e){e.printStackTrace();}
 		return usersList;
 	}
 
